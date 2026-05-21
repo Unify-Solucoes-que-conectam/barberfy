@@ -22,11 +22,11 @@ export function getBarbershopId(): string | null {
   const fromUrl = params.get('barbershop_id')
 
   if (fromUrl) {
-    sessionStorage.setItem('barbershop_id', fromUrl)
+    sessionStorage.setItem('active_barbershop_id', fromUrl)
     return fromUrl
   }
 
-  return sessionStorage.getItem('barbershop_id')
+  return sessionStorage.getItem('active_barbershop_id')
 }
 
 /**
