@@ -1,3 +1,5 @@
+import { Link } from 'react-router'
+
 import { Separator } from '@/components/ui/separator'
 import { SidebarTrigger } from '@/components/ui/sidebar'
 import { useAuth } from '@/hooks/use-auth'
@@ -19,13 +21,13 @@ export function AppHeader() {
         <Separator orientation='vertical' className='mx-2 data-[orientation=vertical]:h-4' />
         <h1 className='text-base font-medium'>{pageTitle}</h1>
         <div className='ml-auto flex items-center gap-2'>
-          <a href='/admin/dashboard' rel='noopener noreferrer'>
+          <Link to='/admin/dashboard' rel='noopener noreferrer'>
             <CustomAvatar
               src={logoSrc}
               alt={barbershop?.company_name || undefined}
-              className='h-10 w-10 rounded-lg'
+              className='rounded-lg'
             />
-          </a>
+          </Link>
         </div>
       </div>
     </header>
