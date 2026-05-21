@@ -3,13 +3,13 @@
  * Útil para componentes que precisam saber se estão no /admin ou /client.
  */
 export function detectAppMode(): 'admin' | 'client' {
-  const pathname = window.location.pathname
+  const params = new URLSearchParams(window.location.search)
 
-  if (pathname.startsWith('/admin')) {
-    return 'admin'
+  if (params.has('barbershop_id')) {
+    return 'client'
   }
 
-  return 'client'
+  return 'admin'
 }
 
 /**

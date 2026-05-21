@@ -5,8 +5,6 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "dev:client": "vite --port 3000",
-    "dev:admin": "vite --port 3001",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "format": "prettier --write .",
