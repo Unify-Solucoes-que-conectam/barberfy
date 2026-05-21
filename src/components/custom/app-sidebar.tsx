@@ -66,7 +66,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <CustomAvatar
                   src={logoSrc}
                   alt={barbershop?.company_name || undefined}
-                  className='h-10 w-10 rounded-lg'
+                  className='rounded-lg'
                 />
                 {loading ? (
                   <Skeleton className='w-full p-2' />
