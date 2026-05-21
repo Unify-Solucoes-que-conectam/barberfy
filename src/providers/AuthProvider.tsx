@@ -194,7 +194,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       const response = await axios.get<ApiResponse>(`${API_URL}/auth/logout`)
 
       if (response.data.success) {
-        window.location.href = '/auth/login'
+        window.location.href = 'auth/login'
       } else {
         toast.error(
           response.data.message ||
