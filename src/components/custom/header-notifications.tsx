@@ -3,7 +3,8 @@ import { useEffect, useRef, useState } from 'react'
 import { BellIcon } from 'lucide-react'
 
 // Importar o arquivo de áudio diretamente
-import notificationAudio from '@/assets/notification.mp3'
+import cancelledAppointmentNotification from '@/assets/cancelled-appointment.mp3'
+import newAppointmentNotification from '@/assets/new-appointment.mp3'
 import { Button } from '@/components/ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Tooltip } from '@/components/ui/tooltip'
@@ -40,7 +41,8 @@ function loadPanelSettings(): PanelSettings {
 
 const HeaderNotifications = () => {
   const scrollRef = useRef<HTMLDivElement>(null)
-  const notificationSound = useRef<HTMLAudioElement | null>(null)
+  const newAppointmentSound = useRef<HTMLAudioElement | null>(null)
+  const cancelledAppointmentSound = useRef<HTMLAudioElement | null>(null)
   const lastPlayTimeRef = useRef<number>(0)
   const settingsRef = useRef<PanelSettings>(loadPanelSettings())
 
@@ -49,6 +51,9 @@ const HeaderNotifications = () => {
 
   // Prevenir múltiplas reproduções em um curto período de tempo
   const PLAY_DEBOUNCE_MS = 500
+
+  // Volume padrão para os sons (pode ser ajustado conforme necessário)
+  const DEFAULT_VOLUME = 0.1
 
   // Sincronizar settings quando localStorage muda (ex: outra aba ou a própria settings page)
   useEffect(() => {
@@ -69,31 +74,37 @@ const HeaderNotifications = () => {
     }
   }, [])
 
-  // Inicializar o som apenas uma vez usando HTMLAudioElement
+  // Inicializar os sons apenas uma vez usando HTMLAudioElement
   useEffect(() => {
-    const audio = new Audio(notificationAudio)
-    audio.preload = 'auto'
-    audio.volume = 0.7
-    notificationSound.current = audio
+    const createAudio = (src: string) => {
+      const audio = new Audio(src)
+      audio.preload = 'auto'
+      audio.volume = DEFAULT_VOLUME
+      return audio
+    }
+
+    const newSound = createAudio(newAppointmentNotification)
+    const cancelledSound = createAudio(cancelledAppointmentNotification)
+    newAppointmentSound.current = newSound
+    cancelledAppointmentSound.current = cancelledSound
 
     // Desbloquear áudio na primeira interação global do usuário
     const unlockAudio = () => {
-      if (notificationSound.current) {
-        notificationSound.current.volume = 0
-        notificationSound.current.currentTime = 0
-        notificationSound.current
+      ;[newAppointmentSound.current, cancelledAppointmentSound.current].forEach((audio) => {
+        if (!audio) return
+        audio.volume = 0
+        audio.currentTime = 0
+        audio
           .play()
           .then(() => {
-            // Pausa imediatamente após o play silencioso
-            notificationSound.current?.pause()
-            notificationSound.current!.currentTime = 0
-            notificationSound.current!.volume = 0.7
+            audio.pause()
+            audio.currentTime = 0
+            audio.volume = DEFAULT_VOLUME
           })
           .catch(() => {
-            // Mesmo se falhar, restaura o volume
-            if (notificationSound.current) notificationSound.current.volume = 0.7
+            audio.volume = DEFAULT_VOLUME
           })
-      }
+      })
       window.removeEventListener('pointerdown', unlockAudio)
       window.removeEventListener('keydown', unlockAudio)
     }
@@ -101,9 +112,12 @@ const HeaderNotifications = () => {
     window.addEventListener('keydown', unlockAudio)
 
     return () => {
-      audio.pause()
-      audio.src = ''
-      notificationSound.current = null
+      newSound.pause()
+      newSound.src = ''
+      cancelledSound.pause()
+      cancelledSound.src = ''
+      newAppointmentSound.current = null
+      cancelledAppointmentSound.current = null
       window.removeEventListener('pointerdown', unlockAudio)
       window.removeEventListener('keydown', unlockAudio)
     }
@@ -176,6 +190,13 @@ const HeaderNotifications = () => {
         return
       }
 
+      // selecionar o áudio correto baseado no tipo da última mensagem recebida
+      const lastMessageType = messages[messages.length - 1].type
+      const audioToPlay =
+        lastMessageType === 'warning'
+          ? cancelledAppointmentSound.current
+          : newAppointmentSound.current
+
       setNotifications((prev) => {
         return [
           ...prev,
@@ -192,16 +213,12 @@ const HeaderNotifications = () => {
       })
 
       // Reproduzir som somente se habilitado nas configurações
-      if (soundEnabled && notificationSound.current) {
+      if (soundEnabled && audioToPlay) {
         const now = Date.now()
         if (now - lastPlayTimeRef.current > PLAY_DEBOUNCE_MS) {
-          try {
-            notificationSound.current.currentTime = 0
-            notificationSound.current.play()
-            lastPlayTimeRef.current = now
-          } catch (error) {
-            console.error('Erro ao tocar notificação:', error)
-          }
+          audioToPlay.currentTime = 0
+          audioToPlay.play().catch(() => {})
+          lastPlayTimeRef.current = now
         }
       }
 
