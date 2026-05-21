@@ -8,6 +8,7 @@ import {
   LinkIcon,
   Loader2Icon,
   PaletteIcon,
+  PhoneIcon,
   ScissorsIcon,
   UserIcon,
 } from 'lucide-react'
@@ -15,6 +16,7 @@ import { useForm, useWatch } from 'react-hook-form'
 import { Link } from 'react-router'
 import { toast } from 'sonner'
 
+import instagramSVG from '@/assets/apps/instagram_light.svg'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import {
@@ -26,10 +28,17 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useAuth } from '@/hooks/use-auth'
 import axios from '@/lib/axios'
 import type { ApiResponse } from '@/types/api-response'
+import {
+  formatCEPDisplay,
+  formatPhoneDisplay,
+  unformatCEP,
+  unformatPhone,
+} from '@/utils/formatters'
 
 import schema, { defaultValues, type Schema } from './schemas'
 import PageSkeleton from './skeletons'
@@ -47,17 +56,7 @@ export default function AdminSettings() {
   const [appLinkCopied, setAppLinkCopied] = useState(false)
   const [autoSaveStatus, setAutoSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle')
   const autoSaveTimerRef = useRef<ReturnType<typeof setTimeout>>(null)
-  // ==================== Utils ====================
-  const formatPhoneDisplay = (phone: string): string => {
-    const cleaned = phone.replace(/\D/g, '')
-    if (cleaned.length <= 2) return cleaned
-    if (cleaned.length <= 7) return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2)}`
-    return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 7)}-${cleaned.slice(7, 11)}`
-  }
 
-  const unformatPhone = (phone: string) => {
-    return phone.replace(/\D/g, '')
-  }
   // ==================== Formulário ====================
   const form = useForm<Schema>({
     resolver: zodResolver(schema),
@@ -144,9 +143,16 @@ export default function AdminSettings() {
   // ==================== Submit ====================
   const onSubmit = async (values: Schema) => {
     const hasChanges =
+      !barbershop?.app_link ||
       form.formState.dirtyFields.company_name ||
       form.formState.dirtyFields.phone ||
       form.formState.dirtyFields.address ||
+      form.formState.dirtyFields.street ||
+      form.formState.dirtyFields.city ||
+      form.formState.dirtyFields.state ||
+      form.formState.dirtyFields.zip_code ||
+      form.formState.dirtyFields.number ||
+      form.formState.dirtyFields.complement ||
       form.formState.dirtyFields.instagram ||
       form.formState.dirtyFields.logo_url ||
       form.formState.dirtyFields.logo_file ||
@@ -170,7 +176,14 @@ export default function AdminSettings() {
     setAutoSaveStatus('saving')
 
     try {
-      const response = await axios.put<ApiResponse>(`/barber-shops/${barbershop?.id}`, values)
+      const appLink = barbershop?.id
+        ? `${window.location.origin}/agendafy/auth/login?barbershop_id=${barbershop.id}`
+        : values.app_link
+
+      const response = await axios.put<ApiResponse>(`/barber-shops/${barbershop?.id}`, {
+        ...values,
+        app_link: appLink,
+      })
       const { data } = response
 
       if (data.success) {
@@ -214,6 +227,26 @@ export default function AdminSettings() {
       setSpinners((prev) => ({ ...prev, page: false }))
     }
   }, [barbershop])
+
+  // ==================== FUNÇÕES AUXILIARES ====================
+  const getCEPInformations = async (cep: string) => {
+    try {
+      const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`).then((r) => r.json())
+
+      if (response.erro === 'true') {
+        toast.error('CEP não encontrado. Verifique o número digitado.')
+        return
+      } else {
+        const { logradouro, localidade, uf } = response
+        form.setValue('street', logradouro, { shouldDirty: true, shouldValidate: true })
+        form.setValue('city', localidade, { shouldDirty: true, shouldValidate: true })
+        form.setValue('state', uf, { shouldDirty: true, shouldValidate: true })
+        handleAutoSave()
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
 
   // ==================== Copiar Link do App ====================
   const handleCopyAppLink = () => {
@@ -325,53 +358,158 @@ export default function AdminSettings() {
                 )}
               />
 
-              <FormField
-                control={form.control}
-                name='phone'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Telefone</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder='(00) 00000-0000'
-                        maxLength={15}
-                        value={formatPhoneDisplay(field.value || '')}
-                        onChange={(e) => {
-                          const unformatted = unformatPhone(e.target.value)
-                          if (unformatted.length <= 11) {
-                            field.onChange(unformatted)
-                          }
-                        }}
-                        onBlur={field.onBlur}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className='flex justify-between gap-3'>
+                <FormField
+                  control={form.control}
+                  name='phone'
+                  render={({ field }) => (
+                    <FormItem className='w-full'>
+                      <FormLabel>
+                        <PhoneIcon size={12} />
+                        Telefone
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder='(00) 00000-0000'
+                          maxLength={15}
+                          value={formatPhoneDisplay(field.value || '')}
+                          onChange={(e) => {
+                            const unformatted = unformatPhone(e.target.value)
+                            if (unformatted.length <= 11) {
+                              field.onChange(unformatted)
+                            }
+                          }}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name='instagram'
+                  render={({ field }) => (
+                    <FormItem className='w-full'>
+                      <FormLabel>
+                        <img src={instagramSVG} alt='Instagram' className='inline-block w-3' />
+                        Instagram
+                      </FormLabel>
+                      <FormControl>
+                        <Input placeholder='@suabarbearia' {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className='flex items-center gap-2'>
+                <span className='text-mist-700'>LOCALIZAÇÃO</span>
+                <Separator className='flex-1' />
+              </div>
+
+              <div className='flex justify-between gap-3'>
+                <FormField
+                  control={form.control}
+                  name='zip_code'
+                  render={({ field }) => (
+                    <FormItem className='w-full'>
+                      <FormLabel>CEP</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder='00000-000'
+                          value={formatCEPDisplay(field.value || '')}
+                          onChange={(e) => {
+                            const unformatted = unformatCEP(e.target.value)
+                            if (unformatted.length <= 8) {
+                              field.onChange(unformatted)
+                              if (unformatted.length === 8) {
+                                getCEPInformations(unformatted)
+                              } else {
+                                handleAutoSave()
+                              }
+                            }
+                          }}
+                          onBlur={field.onBlur}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name='state'
+                  render={({ field }) => (
+                    <FormItem className='w-full'>
+                      <FormLabel>Estado</FormLabel>
+                      <FormControl>
+                        <Input placeholder='Estado' {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name='city'
+                  render={({ field }) => (
+                    <FormItem className='w-full'>
+                      <FormLabel>Cidade</FormLabel>
+                      <FormControl>
+                        <Input placeholder='Cidade' {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className='flex justify-between gap-3'>
+                <FormField
+                  control={form.control}
+                  name='street'
+                  render={({ field }) => (
+                    <FormItem className='w-full'>
+                      <FormLabel>Endereço (Rua/Avenida)</FormLabel>
+                      <FormControl>
+                        <Input placeholder='Rua, número, bairro, cidade' {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name='address'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Número</FormLabel>
+                      <FormControl>
+                        <Input type='number' placeholder='Número' {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
               <FormField
                 control={form.control}
-                name='address'
+                name='complement'
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Endereço</FormLabel>
+                  <FormItem className='w-full'>
+                    <FormLabel>
+                      Complemento
+                      <span className='text-muted-foreground'> (opcional)</span>
+                    </FormLabel>
                     <FormControl>
-                      <Input placeholder='Rua, número, bairro, cidade' {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name='instagram'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Instagram</FormLabel>
-                    <FormControl>
-                      <Input placeholder='@suabarbearia' {...field} />
+                      <Input placeholder='Apartamento, bloco, etc.' {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

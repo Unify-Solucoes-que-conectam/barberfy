@@ -21,7 +21,12 @@ export interface BarberShop {
   logo_url: string | null
   logo_file: string | null
   app_link: string | null
+  street: string | null
+  city: string | null
+  state: string | null
   address: string | null
+  complement: string | null
+  zip_code: string | null
   phone: string | null
   instagram: string | null
   email: string | null
