@@ -294,7 +294,7 @@ export default function AdminSettings() {
                   placeholder='https://seu_link_aparecera_aqui.com'
                   value={
                     barbershop?.id
-                      ? `${window.location.origin}/auth/login?barbershop_id=${barbershop.id}`
+                      ? `${window.location.origin}/agendafy/auth/login?barbershop_id=${barbershop.id}`
                       : ''
                   }
                 />
