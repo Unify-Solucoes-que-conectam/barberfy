@@ -35,11 +35,7 @@ export function SidebarUser() {
               size='lg'
               className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
             >
-              <CustomAvatar
-                src={user?.profile_photo ?? undefined}
-                alt={user?.name || undefined}
-                className='h-10 w-10'
-              />
+              <CustomAvatar src={user?.profile_photo ?? undefined} alt={user?.name || undefined} />
               <div className='grid flex-1 text-left text-sm leading-tight'>
                 {loading ? (
                   <Skeleton className='p-2 mb-1 w-22' />
