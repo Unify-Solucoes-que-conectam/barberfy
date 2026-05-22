@@ -251,7 +251,10 @@ export default function AdminSettings() {
   // ==================== Copiar Link do App ====================
   const handleCopyAppLink = () => {
     if (!barbershop?.id) return
-    const appLink = `${window.location.origin}/auth/login?barbershop_id=${barbershop.id}`
+
+    const appLink = barbershop.app_link
+      ? barbershop.app_link
+      : `${window.location.origin}/agendafy/auth/login?barbershop_id=${barbershop.id}`
     navigator.clipboard.writeText(appLink)
     setAppLinkCopied(true)
     toast.success('Link do app copiado para a área de transferência!')
@@ -327,7 +330,9 @@ export default function AdminSettings() {
                   placeholder='https://seu_link_aparecera_aqui.com'
                   value={
                     barbershop?.id
-                      ? `${window.location.origin}/agendafy/auth/login?barbershop_id=${barbershop.id}`
+                      ? barbershop.app_link
+                        ? barbershop.app_link
+                        : `${window.location.origin}/agendafy/auth/login?barbershop_id=${barbershop.id}`
                       : ''
                   }
                 />
