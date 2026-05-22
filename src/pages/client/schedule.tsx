@@ -406,9 +406,9 @@ export default function ClientSchedule() {
                   color: tokens.onPrimary,
                 }}
                 onClick={handleConfirm}
-                disabled={spinners.general}
+                disabled={spinners.submit}
               >
-                {spinners.general ? (
+                {spinners.submit ? (
                   'Confirmando...'
                 ) : (
                   <>
