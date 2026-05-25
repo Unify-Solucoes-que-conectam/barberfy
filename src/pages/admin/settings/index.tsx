@@ -397,7 +397,7 @@ export default function AdminSettings() {
                     render={({ field }) => (
                       <FormItem className='w-full'>
                         <FormLabel>
-                          <PhoneIcon size={12} />
+                          <PhoneIcon size={16} />
                           Telefone / Whatsapp
                         </FormLabel>
                         <FormControl>
@@ -424,7 +424,7 @@ export default function AdminSettings() {
                     render={({ field }) => (
                       <FormItem className='w-full'>
                         <FormLabel>
-                          <img src={instagramSVG} alt='Instagram' className='inline-block w-3' />
+                          <img src={instagramSVG} alt='Instagram' className='inline-block w-4' />
                           Instagram
                         </FormLabel>
                         <FormControl>
