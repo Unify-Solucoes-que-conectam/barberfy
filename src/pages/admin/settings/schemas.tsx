@@ -5,6 +5,10 @@ import type { BarberShop } from '@/types/consults'
 const schema = z.object({
   company_name: z.string().min(1, 'O nome da empresa é obrigatório.'),
   phone: z.string().max(15, 'O telefone deve ter no máximo 15 caracteres.').optional(),
+  whatsapp_message: z
+    .string()
+    .max(255, 'A mensagem de boas-vindas deve ter no máximo 255 caracteres.')
+    .optional(),
 
   // Campos de endereço
   zip_code: z.string().max(9, 'O CEP deve ter no máximo 9 caracteres.').optional(),
@@ -30,6 +34,7 @@ export type Schema = z.infer<typeof schema>
 export const defaultValues = (data?: BarberShop | null): Schema => ({
   company_name: data?.company_name || '',
   phone: data?.phone || '',
+  whatsapp_message: data?.whatsapp_message || '',
   street: data?.street || '',
   city: data?.city || '',
   state: data?.state || '',

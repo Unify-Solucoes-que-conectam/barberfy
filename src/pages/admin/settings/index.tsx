@@ -20,8 +20,17 @@ import { Link } from 'react-router'
 import { toast } from 'sonner'
 
 import instagramSVG from '@/assets/apps/instagram_light.svg'
+import whatsappSVG from '@/assets/apps/whatsapp_light.svg'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 import {
   Form,
   FormControl,
@@ -33,6 +42,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Textarea } from '@/components/ui/textarea'
 import { useAuth } from '@/hooks/use-auth'
 import axios from '@/lib/axios'
 import type { ApiResponse } from '@/types/api-response'
@@ -425,6 +435,43 @@ export default function AdminSettings() {
                     )}
                   />
                 </div>
+
+                <Card className='border-l-4 border-l-green-400'>
+                  <CardHeader>
+                    <CardTitle className='flex items-center gap-2 text-green-300'>
+                      <img src={whatsappSVG} alt='WhatsApp' className='inline-block w-5' />
+                      Mensagem de Boas-Vindas do WhatsApp
+                    </CardTitle>
+                    <CardDescription>
+                      Os clientes enviarão esta mensagem ao clicar no seu contato do WhatsApp.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <FormField
+                      control={form.control}
+                      name='whatsapp_message'
+                      render={({ field }) => (
+                        <FormItem className='w-full'>
+                          <FormControl>
+                            <Textarea
+                              className='max-w-2xl resize-none'
+                              maxLength={255}
+                              placeholder='Digite sua mensagem de boas-vindas'
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </CardContent>
+                  <CardFooter className='flex items-center justify-between'>
+                    <p className='text-sm text-muted-foreground'>Até 255 caracteres</p>
+                    <Badge className='rounded-sm text-green-300 bg-green-400/10 border-green-400/10'>
+                      {form.watch('whatsapp_message')?.length || 0}/255
+                    </Badge>
+                  </CardFooter>
+                </Card>
               </div>
 
               <div className='space-y-4'>

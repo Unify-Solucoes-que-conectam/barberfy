@@ -28,6 +28,7 @@ export interface BarberShop {
   complement: string | null
   zip_code: string | null
   phone: string | null
+  whatsapp_message: string | null
   instagram: string | null
   email: string | null
   created_at: string
