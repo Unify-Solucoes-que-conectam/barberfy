@@ -169,7 +169,8 @@ export default function AdminSettings() {
       form.formState.dirtyFields.instagram ||
       form.formState.dirtyFields.logo_url ||
       form.formState.dirtyFields.logo_file ||
-      form.formState.dirtyFields.primary_color
+      form.formState.dirtyFields.primary_color ||
+      form.formState.dirtyFields.whatsapp_message
 
     const shouldRefreshAuth = !!(
       form.formState.dirtyFields.company_name ||
