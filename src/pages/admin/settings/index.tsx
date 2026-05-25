@@ -2,11 +2,14 @@ import { useEffect, useRef, useState } from 'react'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
+  BuildingIcon,
   CheckIcon,
   ChevronRightIcon,
+  ContactIcon,
   CopyIcon,
   LinkIcon,
   Loader2Icon,
+  MapPinIcon,
   PaletteIcon,
   PhoneIcon,
   ScissorsIcon,
@@ -345,158 +348,23 @@ export default function AdminSettings() {
 
           {/* Basic Info */}
           <Card>
-            <CardHeader>
-              <CardTitle>Informações Básicas</CardTitle>
-            </CardHeader>
-            <CardContent className='space-y-4'>
-              <FormField
-                control={form.control}
-                name='company_name'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel required>Nome da Barbearia</FormLabel>
-                    <FormControl>
-                      <Input placeholder='Nome da Barbearia' {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            <CardContent className='space-y-8'>
+              <div className='space-y-4'>
+                <div className='flex items-center gap-2 font-bold text-lg'>
+                  <BuildingIcon color={barbershop?.primary_color} />
+                  Informações Básicas
+                </div>
 
-              <div className='flex justify-between gap-3'>
-                <FormField
-                  control={form.control}
-                  name='phone'
-                  render={({ field }) => (
-                    <FormItem className='w-full'>
-                      <FormLabel>
-                        <PhoneIcon size={12} />
-                        Telefone
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder='(00) 00000-0000'
-                          maxLength={15}
-                          value={formatPhoneDisplay(field.value || '')}
-                          onChange={(e) => {
-                            const unformatted = unformatPhone(e.target.value)
-                            if (unformatted.length <= 11) {
-                              field.onChange(unformatted)
-                            }
-                          }}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                <Separator />
 
                 <FormField
                   control={form.control}
-                  name='instagram'
-                  render={({ field }) => (
-                    <FormItem className='w-full'>
-                      <FormLabel>
-                        <img src={instagramSVG} alt='Instagram' className='inline-block w-3' />
-                        Instagram
-                      </FormLabel>
-                      <FormControl>
-                        <Input placeholder='@suabarbearia' {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
-              <div className='flex items-center gap-2'>
-                <span className='text-mist-700'>LOCALIZAÇÃO</span>
-                <Separator className='flex-1' />
-              </div>
-
-              <div className='flex justify-between gap-3'>
-                <FormField
-                  control={form.control}
-                  name='zip_code'
-                  render={({ field }) => (
-                    <FormItem className='w-full'>
-                      <FormLabel>CEP</FormLabel>
-                      <FormControl>
-                        <Input
-                          {...field}
-                          placeholder='00000-000'
-                          value={formatCEPDisplay(field.value || '')}
-                          onChange={(e) => {
-                            const unformatted = unformatCEP(e.target.value)
-                            if (unformatted.length <= 8) {
-                              field.onChange(unformatted)
-                              if (unformatted.length === 8) {
-                                getCEPInformations(unformatted)
-                              } else {
-                                handleAutoSave()
-                              }
-                            }
-                          }}
-                          onBlur={field.onBlur}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name='state'
-                  render={({ field }) => (
-                    <FormItem className='w-full'>
-                      <FormLabel>Estado</FormLabel>
-                      <FormControl>
-                        <Input placeholder='Estado' {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name='city'
-                  render={({ field }) => (
-                    <FormItem className='w-full'>
-                      <FormLabel>Cidade</FormLabel>
-                      <FormControl>
-                        <Input placeholder='Cidade' {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
-              <div className='flex justify-between gap-3'>
-                <FormField
-                  control={form.control}
-                  name='street'
-                  render={({ field }) => (
-                    <FormItem className='w-full'>
-                      <FormLabel>Endereço (Rua/Avenida)</FormLabel>
-                      <FormControl>
-                        <Input placeholder='Rua, número, bairro, cidade' {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name='address'
+                  name='company_name'
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Número</FormLabel>
+                      <FormLabel required>Nome da Barbearia</FormLabel>
                       <FormControl>
-                        <Input type='number' placeholder='Número' {...field} />
+                        <Input placeholder='Nome da Barbearia' {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -504,22 +372,174 @@ export default function AdminSettings() {
                 />
               </div>
 
-              <FormField
-                control={form.control}
-                name='complement'
-                render={({ field }) => (
-                  <FormItem className='w-full'>
-                    <FormLabel>
-                      Complemento
-                      <span className='text-muted-foreground'> (opcional)</span>
-                    </FormLabel>
-                    <FormControl>
-                      <Input placeholder='Apartamento, bloco, etc.' {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className='space-y-4'>
+                <div className='flex items-center gap-2 font-bold text-lg'>
+                  <ContactIcon color={barbershop?.primary_color} />
+                  Redes Sociais e Contato
+                </div>
+
+                <Separator />
+
+                <div className='flex justify-between gap-3'>
+                  <FormField
+                    control={form.control}
+                    name='phone'
+                    render={({ field }) => (
+                      <FormItem className='w-full'>
+                        <FormLabel>
+                          <PhoneIcon size={12} />
+                          Telefone / Whatsapp
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder='(00) 00000-0000'
+                            maxLength={15}
+                            value={formatPhoneDisplay(field.value || '')}
+                            onChange={(e) => {
+                              const unformatted = unformatPhone(e.target.value)
+                              if (unformatted.length <= 11) {
+                                field.onChange(unformatted)
+                              }
+                            }}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name='instagram'
+                    render={({ field }) => (
+                      <FormItem className='w-full'>
+                        <FormLabel>
+                          <img src={instagramSVG} alt='Instagram' className='inline-block w-3' />
+                          Instagram
+                        </FormLabel>
+                        <FormControl>
+                          <Input placeholder='@suabarbearia' {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+
+              <div className='space-y-4'>
+                <div className='flex items-center gap-2 font-bold text-lg'>
+                  <MapPinIcon color={barbershop?.primary_color} />
+                  Localização
+                </div>
+
+                <Separator />
+
+                <div className='flex justify-between gap-3'>
+                  <FormField
+                    control={form.control}
+                    name='zip_code'
+                    render={({ field }) => (
+                      <FormItem className='w-full'>
+                        <FormLabel>CEP</FormLabel>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            placeholder='00000-000'
+                            value={formatCEPDisplay(field.value || '')}
+                            onChange={(e) => {
+                              const unformatted = unformatCEP(e.target.value)
+                              if (unformatted.length <= 8) {
+                                field.onChange(unformatted)
+                                if (unformatted.length === 8) {
+                                  getCEPInformations(unformatted)
+                                } else {
+                                  handleAutoSave()
+                                }
+                              }
+                            }}
+                            onBlur={field.onBlur}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name='state'
+                    render={({ field }) => (
+                      <FormItem className='w-full'>
+                        <FormLabel>Estado</FormLabel>
+                        <FormControl>
+                          <Input placeholder='Estado' {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name='city'
+                    render={({ field }) => (
+                      <FormItem className='w-full'>
+                        <FormLabel>Cidade</FormLabel>
+                        <FormControl>
+                          <Input placeholder='Cidade' {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className='flex justify-between gap-3'>
+                  <FormField
+                    control={form.control}
+                    name='street'
+                    render={({ field }) => (
+                      <FormItem className='w-full'>
+                        <FormLabel>Endereço (Rua/Avenida)</FormLabel>
+                        <FormControl>
+                          <Input placeholder='Rua, número, bairro, cidade' {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name='address'
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Número</FormLabel>
+                        <FormControl>
+                          <Input type='number' placeholder='Número' {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <FormField
+                  control={form.control}
+                  name='complement'
+                  render={({ field }) => (
+                    <FormItem className='w-full'>
+                      <FormLabel>
+                        Complemento
+                        <span className='text-muted-foreground'> (opcional)</span>
+                      </FormLabel>
+                      <FormControl>
+                        <Input placeholder='Apartamento, bloco, etc.' {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </CardContent>
           </Card>
 
