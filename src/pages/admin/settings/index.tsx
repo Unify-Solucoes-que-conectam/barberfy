@@ -329,8 +329,8 @@ export default function AdminSettings() {
           {/* App Link */}
           <Card>
             <CardHeader>
-              <CardTitle className='flex items-center gap-2'>
-                <LinkIcon className='h-5 w-5' />
+              <CardTitle className='flex items-center gap-2 text-lg'>
+                <LinkIcon color={barbershop?.primary_color} />
                 Link do App
               </CardTitle>
               <CardDescription>Compartilhe este link com seus clientes</CardDescription>
