@@ -21,7 +21,7 @@ const Switch = React.forwardRef<
       style={
         {
           '--switch-checked-bg': tokens.primary,
-          '--switch-unchecked-bg': tokens.disabled,
+          '--switch-unchecked-bg': 'var(--muted)',
           '--switch-thumb-bg': tokens.onPrimary,
         } as React.CSSProperties
       }
