@@ -31,11 +31,34 @@ const ThemeProvider = ({
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
   }, [theme])
 
+  const tokens = useMemo(() => {
+    const onPrimary = getReadableTextColor(barbershopPrimaryColor)
+
+    return {
+      primary: barbershopPrimaryColor,
+      onPrimary,
+
+      background: resolvedTheme === 'light' ? '#FFFFFF' : '#121212',
+      onBackground: resolvedTheme === 'light' ? '#1A1A1A' : '#FFFFFF',
+
+      border: adjustColor(barbershopPrimaryColor, resolvedTheme === 'light' ? -40 : 40),
+      hover: adjustColor(barbershopPrimaryColor, resolvedTheme === 'light' ? -20 : 20),
+      active: adjustColor(barbershopPrimaryColor, resolvedTheme === 'light' ? -30 : 30),
+      disabled: adjustColor(barbershopPrimaryColor + 'ff', -200),
+    }
+  }, [barbershopPrimaryColor, resolvedTheme])
+
   useEffect(() => {
     const root = document.documentElement
     root.classList.remove('light', 'dark')
     root.classList.add(resolvedTheme)
   }, [resolvedTheme])
+
+  useEffect(() => {
+    const root = document.documentElement
+    root.style.setProperty('--barbershop-primary', tokens.primary)
+    root.style.setProperty('--barbershop-primary-foreground', tokens.onPrimary)
+  }, [tokens])
 
   useEffect(() => {
     if (barbershop?.primary_color) {
@@ -57,23 +80,6 @@ const ThemeProvider = ({
       window.removeEventListener('barbershop-color-change', handleColorChange)
     }
   }, [])
-
-  const tokens = useMemo(() => {
-    const onPrimary = getReadableTextColor(barbershopPrimaryColor)
-
-    return {
-      primary: barbershopPrimaryColor,
-      onPrimary,
-
-      background: resolvedTheme === 'light' ? '#FFFFFF' : '#121212',
-      onBackground: resolvedTheme === 'light' ? '#1A1A1A' : '#FFFFFF',
-
-      border: adjustColor(barbershopPrimaryColor, resolvedTheme === 'light' ? -40 : 40),
-      hover: adjustColor(barbershopPrimaryColor, resolvedTheme === 'light' ? -20 : 20),
-      active: adjustColor(barbershopPrimaryColor, resolvedTheme === 'light' ? -30 : 30),
-      disabled: adjustColor(barbershopPrimaryColor + 'ff', -200),
-    }
-  }, [barbershopPrimaryColor, resolvedTheme])
 
   const value = {
     theme,

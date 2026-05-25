@@ -140,6 +140,11 @@ body,
   body {
     @apply bg-background text-foreground;
   }
+
+  ::selection {
+    background-color: var(--barbershop-primary);
+    color: var(--barbershop-primary-foreground);
+  }
 }
 
 /* Scrollbar global para todos os elementos */
