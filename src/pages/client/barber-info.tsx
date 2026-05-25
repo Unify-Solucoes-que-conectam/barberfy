@@ -81,7 +81,7 @@ export default function ClientInfoBarbershop() {
             </a>
 
             <a
-              href={`https://api.whatsapp.com/send?phone=${barbershop.phone}&text=Olá, vim pelo aplicativo e gostaria de saber mais sobre os serviços da barbearia.`}
+              href={`https://api.whatsapp.com/send?phone=${barbershop.phone}&text=${barbershop.whatsapp_message || 'Olá, gostaria de mais informações!'}`}
               className='flex items-center gap-3 hover:text-primary'
               target='_blank'
               rel='noopener noreferrer'
