@@ -27,6 +27,9 @@ import { cn } from '@/lib/utils'
 import type { ApiResponse } from '@/types/api-response'
 import type { Appointment } from '@/types/consults'
 import { nameFormatter } from '@/utils/formatters'
+import { getMonthList } from '@/utils/list'
+
+import InvoicingChart from './charts/dashboard-invoicings'
 
 type StatusFilter = 'all' | '0' | '1' | '2'
 
@@ -259,58 +262,74 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        {/* Today's Appointments */}
-        <Card>
-          <CardHeader className='flex flex-row items-center justify-between'>
-            <div>
-              <CardTitle>Agendamentos de Hoje</CardTitle>
-              <CardDescription>
-                {appointments.length} agendamento(s)
-                {statusFilter !== 'all' && ` — ${filterLabels[statusFilter]}`}
-              </CardDescription>
-            </div>
-            <Tabs
-              value={statusFilter}
-              onValueChange={(value) => setStatusFilter(value as StatusFilter)}
-            >
-              <TabsList>
-                <TabsTrigger value='all'>Todos</TabsTrigger>
-                <TabsTrigger value='0'>Pendentes</TabsTrigger>
-                <TabsTrigger value='1'>Confirmados</TabsTrigger>
-                <TabsTrigger value='2'>Cancelados</TabsTrigger>
-              </TabsList>
-            </Tabs>
-          </CardHeader>
-          <CardContent>
-            {spinners.general ? (
-              <Loader showMessage={true} message='Carregando agendamentos...' />
-            ) : appointments.length === 0 ? (
-              <p className='text-muted-foreground'>Nenhum agendamento para hoje</p>
-            ) : (
-              <div className='space-y-3'>
-                {appointments.map((apt) => (
-                  <div
-                    key={apt.id}
-                    className='flex items-center justify-between p-3 rounded-lg bg-muted/50'
-                  >
-                    <div className='flex items-center gap-3'>
-                      <div className='text-center min-w-12.5'>
-                        <p className='font-bold'>{apt.time.slice(0, 5)}</p>
-                      </div>
-                      <div>
-                        <p className='font-medium'>{nameFormatter(apt.customer?.name)}</p>
-                        <p className='text-sm text-muted-foreground'>{apt.service?.name}</p>
-                      </div>
-                    </div>
-                    <Badge className={getStatusData(apt.status).color}>
-                      {getStatusData(apt.status).label}
-                    </Badge>
-                  </div>
-                ))}
+        <div className='flex gap-3'>
+          {/* Today's Appointments */}
+          <Card className='w-full'>
+            <CardHeader className='flex flex-row items-center justify-between'>
+              <div>
+                <CardTitle>Agendamentos de Hoje</CardTitle>
+                <CardDescription>
+                  {appointments.length} agendamento(s)
+                  {statusFilter !== 'all' && ` — ${filterLabels[statusFilter]}`}
+                </CardDescription>
               </div>
-            )}
-          </CardContent>
-        </Card>
+              <Tabs
+                value={statusFilter}
+                onValueChange={(value) => setStatusFilter(value as StatusFilter)}
+              >
+                <TabsList>
+                  <TabsTrigger value='all'>Todos</TabsTrigger>
+                  <TabsTrigger value='0'>Pendentes</TabsTrigger>
+                  <TabsTrigger value='1'>Confirmados</TabsTrigger>
+                  <TabsTrigger value='2'>Cancelados</TabsTrigger>
+                </TabsList>
+              </Tabs>
+            </CardHeader>
+            <CardContent>
+              {spinners.general ? (
+                <Loader showMessage={true} message='Carregando agendamentos...' />
+              ) : appointments.length === 0 ? (
+                <p className='text-muted-foreground'>Nenhum agendamento para hoje</p>
+              ) : (
+                <div className='space-y-3'>
+                  {appointments.map((apt) => (
+                    <div
+                      key={apt.id}
+                      className='flex items-center justify-between p-3 rounded-lg bg-muted/50'
+                    >
+                      <div className='flex items-center gap-3'>
+                        <div className='text-center min-w-12.5'>
+                          <p className='font-bold'>{apt.time.slice(0, 5)}</p>
+                        </div>
+                        <div>
+                          <p className='font-medium'>{nameFormatter(apt.customer?.name)}</p>
+                          <p className='text-sm text-muted-foreground'>{apt.service?.name}</p>
+                        </div>
+                      </div>
+                      <Badge className={getStatusData(apt.status).color}>
+                        {getStatusData(apt.status).label}
+                      </Badge>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Invoicing Chart */}
+          <InvoicingChart
+            config={{
+              value: {
+                label: 'Faturamento',
+                color: 'var(--primary)',
+              },
+            }}
+            data={getMonthList('pt-BR', 'short').map((month) => ({
+              month: month.charAt(0).toUpperCase() + month.slice(1, 3),
+              value: Math.floor(Math.random() * 10000),
+            }))}
+          />
+        </div>
       </div>
     </div>
   )
