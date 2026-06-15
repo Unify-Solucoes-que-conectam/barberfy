@@ -3,9 +3,13 @@ import { useEffect, useState } from 'react'
 import {
   AlertCircleIcon,
   CalendarIcon,
+  ChartColumnIncreasingIcon,
   CheckCircle2Icon,
   CircleXIcon,
+  DollarSignIcon,
+  PackagePlusIcon,
   RefreshCwIcon,
+  TrendingUpIcon,
 } from 'lucide-react'
 import { toast } from 'sonner'
 
@@ -145,6 +149,42 @@ export default function AdminDashboard() {
     },
   ]
 
+  const invoicingCards = [
+    {
+      title: 'Faturamento Hoje',
+      ammount: 'R$ 0,00',
+      icon: <DollarSignIcon className='h-5 w-5 text-emerald-600' />,
+      description: (
+        <div className='flex gap-1 items-center text-emerald-500'>
+          <TrendingUpIcon className='h-4 w-4' />
+          +12% vs. ontem
+        </div>
+      ),
+      className: 'bg-emerald-200 dark:bg-emerald-600/20',
+    },
+    {
+      title: 'Faturamento Mês',
+      ammount: 'R$ 0,00',
+      icon: <ChartColumnIncreasingIcon className='h-5 w-5 text-sky-600' />,
+      description: (
+        <div className='flex gap-1 items-center text-muted-foreground'>Até 15 de junho</div>
+      ),
+      className: 'bg-sky-200 dark:bg-sky-600/20',
+    },
+    {
+      title: 'Ticket Médio',
+      ammount: 'R$ 0,00',
+      icon: <PackagePlusIcon className='h-5 w-5 text-purple-600' />,
+      description: (
+        <div className='flex gap-1 items-center text-purple-500'>
+          <TrendingUpIcon className='h-4 w-4' />
+          Impulsionado por combos
+        </div>
+      ),
+      className: 'bg-purple-200 dark:bg-purple-600/20',
+    },
+  ]
+
   const filterLabels: Record<StatusFilter, string> = {
     'all': 'Todos',
     '0': 'Pendentes',
@@ -198,6 +238,25 @@ export default function AdminDashboard() {
               </CardContent>
             </Card>
           ))}
+        </div>
+
+        {/* Invoices */}
+        <div className='flex flex-col gap-3'>
+          <h1 className='font-bold'>Resumo Financeiro</h1>
+          <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+            {invoicingCards.map((card, index) => (
+              <Card key={index} className='p-6 gap-3'>
+                <CardTitle className='flex items-center justify-between'>
+                  <p className='text-lg text-muted-foreground'>{card.title}</p>
+                  <div className={cn('rounded-md p-2', card.className)}>{card.icon}</div>
+                </CardTitle>
+                <CardContent className='p-0'>
+                  <p className='text-2xl font-bold'>{card.ammount}</p>
+                </CardContent>
+                <CardDescription>{card.description}</CardDescription>
+              </Card>
+            ))}
+          </div>
         </div>
 
         {/* Today's Appointments */}
