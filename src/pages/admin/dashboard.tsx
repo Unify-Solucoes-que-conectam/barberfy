@@ -34,7 +34,7 @@ import dayjs from '@/lib/dayjs'
 import { cn } from '@/lib/utils'
 import type { ApiResponse } from '@/types/api-response'
 import type { Appointment } from '@/types/consults'
-import { formatCurrency, nameFormatter } from '@/utils/formatters'
+import { nameFormatter } from '@/utils/formatters'
 import { getMonthList } from '@/utils/list'
 
 import InvoicingChart from './charts/dashboard-invoicings'
@@ -330,7 +330,7 @@ export default function AdminDashboard() {
             }}
             data={getMonthList('pt-BR', 'short').map((month) => ({
               month: month.charAt(0).toUpperCase() + month.slice(1, 3),
-              value: `R$ ${formatCurrency(Math.floor(Math.random() * 10000))}`,
+              value: Math.floor(Math.random() * 10000),
             }))}
           />
         </div>

@@ -16,6 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { formatCurrency } from '@/utils/formatters'
 import { getYearList } from '@/utils/list'
 
 interface InvoicingChartProps {
@@ -52,7 +53,19 @@ export default function InvoicingChart(props: InvoicingChartProps) {
           <BarChart data={props.data}>
             <CartesianGrid vertical={false} />
             <XAxis dataKey='month' tickLine={false} tickMargin={10} axisLine={false} />
-            <ChartTooltip content={<ChartTooltipContent />} />
+            <ChartTooltip
+              content={
+                <ChartTooltipContent
+                  formatter={(value) => (
+                    <div className='flex gap-2'>
+                      <div className='p-2 rounded-sm bg-blue-500'></div>
+                      <span className='text-xs text-muted-foreground'>Faturamento: </span>
+                      {formatCurrency(Number(value))}
+                    </div>
+                  )}
+                />
+              }
+            />
             <Bar dataKey='value' fill='var(--chart-1)' radius={4} />
           </BarChart>
         </ChartContainer>
