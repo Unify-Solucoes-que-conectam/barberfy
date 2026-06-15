@@ -196,13 +196,6 @@ export default function AdminDashboard() {
     },
   ]
 
-  const filterLabels: Record<StatusFilter, string> = {
-    'all': 'Todos',
-    '0': 'Pendentes',
-    '1': 'Confirmados',
-    '2': 'Cancelados',
-  }
-
   return (
     <div>
       {/* Content */}
@@ -276,10 +269,7 @@ export default function AdminDashboard() {
             <CardHeader className='flex flex-row items-center justify-between'>
               <div className='flex flex-col gap-1'>
                 <CardTitle>Agendamentos de Hoje</CardTitle>
-                <CardDescription>
-                  {appointments.length} agendamento(s)
-                  {statusFilter !== 'all' && ` — ${filterLabels[statusFilter]}`}
-                </CardDescription>
+                <CardDescription>{appointments.length} agendamento(s)</CardDescription>
               </div>
               <Select
                 value={statusFilter}
