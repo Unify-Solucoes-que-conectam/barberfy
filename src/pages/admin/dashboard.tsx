@@ -98,13 +98,13 @@ export default function AdminDashboard() {
   const getStatusData = (status: string): { label: string; color: string } => {
     switch (status) {
       case '0':
-        return { label: 'Pendente', color: 'bg-yellow-500/20 text-yellow-400' }
+        return { label: 'Pendente', color: 'bg-yellow-500/20 text-yellow-600' }
       case '1':
-        return { label: 'Confirmado', color: 'bg-green-500/20 text-green-400' }
+        return { label: 'Confirmado', color: 'bg-green-500/20 text-green-600' }
       case '2':
-        return { label: 'Cancelado', color: 'bg-red-500/20 text-red-400' }
+        return { label: 'Cancelado', color: 'bg-red-500/20 text-red-600' }
       default:
-        return { label: 'Desconhecido', color: 'default' }
+        return { label: 'Desconhecido', color: 'bg-gray-500/20 text-gray-600' }
     }
   }
 
@@ -118,29 +118,29 @@ export default function AdminDashboard() {
     {
       title: 'Hoje',
       ammount: spinners.general ? '...' : stats.today,
-      icon: <CalendarIcon className='h-5 w-5 text-blue-600 dark:text-white' />,
-      className: 'bg-blue-100 dark:bg-blue-600',
+      icon: <CalendarIcon className='h-5 w-5 text-blue-600' />,
+      className: 'bg-blue-200 dark:bg-blue-600/20',
       filter: 'all',
     },
     {
       title: 'Pendentes',
       ammount: spinners.general ? '...' : stats.pending,
-      icon: <AlertCircleIcon className='h-5 w-5 text-yellow-600 dark:text-white' />,
-      className: 'bg-yellow-100 dark:bg-yellow-600',
+      icon: <AlertCircleIcon className='h-5 w-5 text-yellow-600' />,
+      className: 'bg-yellow-200 dark:bg-yellow-600/20',
       filter: '0',
     },
     {
       title: 'Confirmados',
       ammount: spinners.general ? '...' : stats.confirmed,
-      icon: <CheckCircle2Icon className='h-5 w-5 text-green-600 dark:text-white' />,
-      className: 'bg-green-100 dark:bg-green-600',
+      icon: <CheckCircle2Icon className='h-5 w-5 text-green-600' />,
+      className: 'bg-green-200 dark:bg-green-600/20',
       filter: '1',
     },
     {
       title: 'Cancelados',
       ammount: spinners.general ? '...' : stats.cancelled,
-      icon: <CircleXIcon className='h-5 w-5 text-red-600 dark:text-white' />,
-      className: 'bg-red-100 dark:bg-red-600',
+      icon: <CircleXIcon className='h-5 w-5 text-red-600' />,
+      className: 'bg-red-200 dark:bg-red-600/20',
       filter: '2',
     },
   ]
