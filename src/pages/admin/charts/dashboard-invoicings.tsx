@@ -27,7 +27,7 @@ export default function InvoicingChart(props: InvoicingChartProps) {
   return (
     <Card className='w-full'>
       <CardHeader className='flex items-center justify-between'>
-        <div>
+        <div className='flex flex-col gap-1'>
           <CardTitle>Faturamento Anual</CardTitle>
           <CardDescription>Comparativo mês a mês</CardDescription>
         </div>

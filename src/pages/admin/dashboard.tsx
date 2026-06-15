@@ -17,7 +17,15 @@ import Loader from '@/components/custom/loader'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { useAuth } from '@/hooks/use-auth'
 import useEcho from '@/hooks/use-echo'
 import { useHeader } from '@/hooks/use-header'
@@ -266,24 +274,30 @@ export default function AdminDashboard() {
           {/* Today's Appointments */}
           <Card className='w-full'>
             <CardHeader className='flex flex-row items-center justify-between'>
-              <div>
+              <div className='flex flex-col gap-1'>
                 <CardTitle>Agendamentos de Hoje</CardTitle>
                 <CardDescription>
                   {appointments.length} agendamento(s)
                   {statusFilter !== 'all' && ` — ${filterLabels[statusFilter]}`}
                 </CardDescription>
               </div>
-              <Tabs
+              <Select
                 value={statusFilter}
                 onValueChange={(value) => setStatusFilter(value as StatusFilter)}
               >
-                <TabsList>
-                  <TabsTrigger value='all'>Todos</TabsTrigger>
-                  <TabsTrigger value='0'>Pendentes</TabsTrigger>
-                  <TabsTrigger value='1'>Confirmados</TabsTrigger>
-                  <TabsTrigger value='2'>Cancelados</TabsTrigger>
-                </TabsList>
-              </Tabs>
+                <SelectTrigger className='w-full max-w-48'>
+                  <SelectValue placeholder='Selecione um status' />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Status</SelectLabel>
+                    <SelectItem value='all'>Todos</SelectItem>
+                    <SelectItem value='0'>Pendentes</SelectItem>
+                    <SelectItem value='1'>Confirmados</SelectItem>
+                    <SelectItem value='2'>Cancelados</SelectItem>
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
             </CardHeader>
             <CardContent>
               {spinners.general ? (
