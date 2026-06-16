@@ -86,6 +86,13 @@ export default function AdminBusinessHours() {
     setHours((prev) => prev.map((h, i) => (i === dayIndex ? { ...h, [field]: value } : h)))
   }
 
+  /**
+   * atualiza todos os horários
+   */
+  const updateAllHours = (open_time: string, close_time: string, is_open: boolean) => {
+    setHours((prev) => prev.map((h) => ({ ...h, open_time, close_time, is_open })))
+  }
+
   const handleSave = async () => {
     setSaving(true)
 
@@ -158,43 +165,91 @@ export default function AdminBusinessHours() {
           <Loader showMessage={true} message='Carregando horários...' />
         </div>
       ) : (
-        <Card>
-          <CardContent className='p-4 space-y-4'>
-            {hours.map((hour, index) => (
-              <div key={hour.day_of_week} className='flex items-center gap-4 p-3 rounded-lg border'>
-                <div className='flex-1'>
-                  <p className='font-medium'>{DAYS[hour.day_of_week]?.label}</p>
-                </div>
+        <>
+          {/* Auto-complete de horários */}
+          <Card>
+            <CardContent className='flex gap-3 items-center'>
+              <div className='flex-1'>
+                <p className='font-medium'>Preencher todos os dias</p>
+              </div>
 
-                {hour.is_open && (
+              <div className='flex items-center gap-2'>
+                <input
+                  type='time'
+                  value={hours[0].open_time}
+                  onChange={(e) =>
+                    updateAllHours(e.target.value, hours[0].close_time, hours[0].is_open)
+                  }
+                  className='px-2 py-1 border rounded'
+                />
+                <span>até</span>
+                <input
+                  type='time'
+                  value={hours[0].close_time}
+                  onChange={(e) =>
+                    updateAllHours(hours[0].open_time, e.target.value, hours[0].is_open)
+                  }
+                  className='px-2 py-1 border rounded'
+                />
+              </div>
+
+              <div className='flex items-center gap-2'>
+                {!hours[0].is_open && (
+                  <span className='text-sm text-muted-foreground'>Fechado</span>
+                )}
+                <Switch
+                  checked={hours[0].is_open}
+                  onCheckedChange={(checked) =>
+                    updateAllHours(hours[0].open_time, hours[0].close_time, checked)
+                  }
+                />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className='p-4 space-y-4'>
+              {hours.map((hour, index) => (
+                <div
+                  key={hour.day_of_week}
+                  className='flex items-center gap-4 p-3 rounded-lg border'
+                >
+                  <div className='flex-1'>
+                    <p className='font-medium'>{DAYS[hour.day_of_week]?.label}</p>
+                  </div>
+
+                  {hour.is_open && (
+                    <div className='flex items-center gap-2'>
+                      <input
+                        type='time'
+                        value={hour.open_time}
+                        onChange={(e) => updateDay(index, 'open_time', e.target.value)}
+                        className='px-2 py-1 border rounded'
+                      />
+                      <span>até</span>
+                      <input
+                        type='time'
+                        value={hour.close_time}
+                        onChange={(e) => updateDay(index, 'close_time', e.target.value)}
+                        className='px-2 py-1 border rounded'
+                      />
+                    </div>
+                  )}
+
                   <div className='flex items-center gap-2'>
-                    <input
-                      type='time'
-                      value={hour.open_time}
-                      onChange={(e) => updateDay(index, 'open_time', e.target.value)}
-                      className='px-2 py-1 border rounded'
-                    />
-                    <span>até</span>
-                    <input
-                      type='time'
-                      value={hour.close_time}
-                      onChange={(e) => updateDay(index, 'close_time', e.target.value)}
-                      className='px-2 py-1 border rounded'
+                    {!hour.is_open && (
+                      <span className='text-sm text-muted-foreground'>Fechado</span>
+                    )}
+                    <Switch
+                      checked={hour.is_open}
+                      onCheckedChange={(checked) => updateDay(index, 'is_open', checked)}
                     />
                   </div>
-                )}
-
-                <div className='flex items-center gap-2'>
-                  {!hour.is_open && <span className='text-sm text-muted-foreground'>Fechado</span>}
-                  <Switch
-                    checked={hour.is_open}
-                    onCheckedChange={(checked) => updateDay(index, 'is_open', checked)}
-                  />
                 </div>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
+              ))}
+            </CardContent>
+          </Card>
+        </>
       )}
     </div>
   )
