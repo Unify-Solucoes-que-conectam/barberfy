@@ -1,4 +1,4 @@
-import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts'
+import { CartesianGrid, Line, LineChart, XAxis } from 'recharts'
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import {
@@ -50,7 +50,7 @@ export default function InvoicingChart(props: InvoicingChartProps) {
       </CardHeader>
       <CardContent>
         <ChartContainer config={props.config}>
-          <BarChart data={props.data}>
+          <LineChart accessibilityLayer data={props.data}>
             <CartesianGrid vertical={false} />
             <XAxis dataKey='month' tickLine={false} tickMargin={10} axisLine={false} />
             <ChartTooltip
@@ -66,8 +66,14 @@ export default function InvoicingChart(props: InvoicingChartProps) {
                 />
               }
             />
-            <Bar dataKey='value' fill='var(--chart-1)' radius={4} />
-          </BarChart>
+            <Line
+              dataKey='value'
+              type='linear'
+              stroke='var(--color-blue-500)'
+              strokeWidth={2}
+              dot={false}
+            />
+          </LineChart>
         </ChartContainer>
       </CardContent>
     </Card>

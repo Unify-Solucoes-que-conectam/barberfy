@@ -27,7 +27,11 @@ createRoot(document.getElementById('root')!).render(
         toastOptions={{
           classNames: {
             toast:
-              '!bg-neutral-100 border !border-neutral-200 dark:!bg-neutral-800 dark:!border-neutral-700',
+              '!bg-neutral-100 !border-neutral-200 dark:!bg-neutral-800 dark:!border-neutral-700',
+            success: '!text-emerald-600',
+            error: '!text-red-600',
+            warning: '!text-amber-600',
+            info: '!text-blue-600',
           },
         }}
       />
