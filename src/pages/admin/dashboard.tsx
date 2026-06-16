@@ -201,15 +201,15 @@ export default function AdminDashboard() {
       {/* Content */}
       <div className='space-y-6'>
         {/* Welcome */}
-        <div className='flex justify-between items-end'>
-          <div>
+        <div className='flex justify-between items-end flex-wrap md:flex-nowrap'>
+          <div className='w-full'>
             <h1 className='text-2xl font-bold'>Olá! 👋</h1>
             <p className='text-muted-foreground'>
               {dayjs(new Date()).format('dddd, D [de] MMMM [de] YYYY')}
             </p>
           </div>
 
-          <div className='flex items-center gap-3'>
+          <div className='flex items-center justify-end gap-3 w-full'>
             <span className='text-sm text-muted-foreground'>
               Última atualização realizada às {dayjs(lastUpdate).format('HH:mm:ss')}
             </span>
@@ -224,7 +224,7 @@ export default function AdminDashboard() {
         </div>
 
         {/* Stats */}
-        <div className='grid grid-cols-1 md:grid-cols-4 gap-4'>
+        <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4'>
           {cards.map((card, index) => (
             <Card
               key={index}
@@ -247,7 +247,7 @@ export default function AdminDashboard() {
         {/* Invoices */}
         <div className='flex flex-col gap-3'>
           <h1 className='font-bold'>Resumo Financeiro</h1>
-          <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+          <div className='grid grid-cols-1 lg:grid-cols-3 gap-4'>
             {invoicingCards.map((card, index) => (
               <Card key={index} className='p-6 gap-3'>
                 <CardTitle className='flex items-center justify-between'>
@@ -263,7 +263,7 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        <div className='flex gap-3'>
+        <div className='flex gap-3 flex-wrap xl:flex-nowrap'>
           {/* Today's Appointments */}
           <Card className='w-full'>
             <CardHeader className='flex flex-row items-center justify-between'>
