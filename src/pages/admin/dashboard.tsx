@@ -33,8 +33,8 @@ import axios from '@/lib/axios'
 import dayjs from '@/lib/dayjs'
 import { cn } from '@/lib/utils'
 import type { ApiResponse } from '@/types/api-response'
-import type { Appointment } from '@/types/consults'
-import { nameFormatter } from '@/utils/formatters'
+import type { Appointment, DashboardStats, FinancialSummary } from '@/types/consults'
+import { formatCurrency, nameFormatter } from '@/utils/formatters'
 import { getMonthList } from '@/utils/list'
 
 import InvoicingChart from './charts/dashboard-invoicings'
@@ -76,11 +76,16 @@ export default function AdminDashboard() {
   }, [statusFilter])
 
   const [appointments, setAppointments] = useState<Appointment[]>([])
-  const [stats, setStats] = useState({
+  const [stats, setStats] = useState<DashboardStats>({
     today: 0,
     pending: 0,
     confirmed: 0,
     cancelled: 0,
+  })
+  const [financialSummary, setFinancialSummary] = useState<FinancialSummary>({
+    today_invoicing: 0,
+    month_invoicing: 0,
+    average_ticket: 0,
   })
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null)
 
@@ -90,7 +95,8 @@ export default function AdminDashboard() {
     try {
       const response = await axios.get<
         ApiResponse<Appointment[]> & {
-          stats: { today: number; pending: number; confirmed: number; cancelled: number }
+          stats: DashboardStats
+          financial_summary: FinancialSummary
         }
       >('/dashboard/today_appointments', {
         params: { status: statusFilter },
@@ -99,6 +105,7 @@ export default function AdminDashboard() {
       if (response.data.success) {
         setAppointments(response.data.data)
         setStats(response.data.stats)
+        setFinancialSummary(response.data.financial_summary)
       } else {
         toast.error(response.data.message || 'Erro ao buscar agendamentos.')
       }
@@ -163,7 +170,7 @@ export default function AdminDashboard() {
   const invoicingCards = [
     {
       title: 'Faturamento Hoje',
-      ammount: 'R$ 0,00',
+      ammount: formatCurrency(financialSummary.today_invoicing),
       icon: <DollarSignIcon className='h-5 w-5 text-emerald-600' />,
       description: (
         <div className='flex gap-1 items-center text-emerald-500'>
@@ -175,16 +182,19 @@ export default function AdminDashboard() {
     },
     {
       title: 'Faturamento Mês',
-      ammount: 'R$ 0,00',
+      ammount: formatCurrency(financialSummary.month_invoicing),
       icon: <ChartColumnIncreasingIcon className='h-5 w-5 text-sky-600' />,
       description: (
-        <div className='flex gap-1 items-center text-muted-foreground'>Até 15 de junho</div>
+        <div className='flex gap-1 items-center text-muted-foreground'>
+          De {dayjs().startOf('month').format('DD [de] MMMM ')}
+          Até {dayjs().endOf('month').format('DD [de] MMMM')}
+        </div>
       ),
       className: 'bg-sky-200 dark:bg-sky-600/20',
     },
     {
       title: 'Ticket Médio',
-      ammount: 'R$ 0,00',
+      ammount: formatCurrency(financialSummary.average_ticket),
       icon: <PackagePlusIcon className='h-5 w-5 text-purple-600' />,
       description: (
         <div className='flex gap-1 items-center text-purple-500'>

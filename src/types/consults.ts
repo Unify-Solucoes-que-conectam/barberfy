@@ -73,6 +73,19 @@ export interface Appointment {
   customer: User
 }
 
+export interface DashboardStats {
+  today: number
+  pending: number
+  confirmed: number
+  cancelled: number
+}
+
+export interface FinancialSummary {
+  today_invoicing: number
+  month_invoicing: number
+  average_ticket: number
+}
+
 export interface BusinessHour {
   id: string
   barbershop_id: string
