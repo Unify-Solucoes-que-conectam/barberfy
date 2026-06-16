@@ -49,7 +49,7 @@ type StatusFilter = 'all' | '0' | '1' | '2'
 
 export default function AdminDashboard() {
   // ==================== REF's ====================
-  const mounted = useRef(false)
+  const isFirstRender = useRef(true)
 
   // ==================== HOOK's ====================
   const { user } = useAuth()
@@ -70,17 +70,14 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     setPageTitle('Dashboard')
-    if (!mounted.current) {
-      mounted.current = true
-      fetchAll() // carrega todos os dados da dashboard
-    }
+    fetchAll() // carrega todos os dados da dashboard
   }, [])
 
   /**
    * consultar dados quando receber notificação
    */
   useEffect(() => {
-    if (!mounted.current) return
+    if (isFirstRender.current) return
 
     // consultar dados
     fetchStats()
@@ -90,7 +87,7 @@ export default function AdminDashboard() {
    * refetch quando o filtro mudar
    */
   useEffect(() => {
-    if (!mounted.current) return
+    if (isFirstRender.current) return
 
     fetchStats()
   }, [statusFilter])
@@ -98,10 +95,15 @@ export default function AdminDashboard() {
   const [invoicingYear, setInvoicingYear] = useState<number>(dayjs().year())
 
   useEffect(() => {
-    if (!mounted.current) return
+    if (isFirstRender.current) return
 
     fetchInvoicingByYear(invoicingYear)
   }, [invoicingYear])
+
+  // evita carregamento em excesso
+  useEffect(() => {
+    isFirstRender.current = false
+  }, [])
 
   const [appointments, setAppointments] = useState<Appointment[]>([])
   const [stats, setStats] = useState<DashboardStats>({
