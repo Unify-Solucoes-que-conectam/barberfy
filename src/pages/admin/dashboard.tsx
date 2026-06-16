@@ -9,6 +9,8 @@ import {
   DollarSignIcon,
   PackagePlusIcon,
   RefreshCwIcon,
+  TrendingDownIcon,
+  TrendingUpDownIcon,
   TrendingUpIcon,
 } from 'lucide-react'
 import { toast } from 'sonner'
@@ -83,7 +85,11 @@ export default function AdminDashboard() {
     cancelled: 0,
   })
   const [financialSummary, setFinancialSummary] = useState<FinancialSummary>({
-    today_invoicing: 0,
+    today_invoicing: {
+      total: 0,
+      invoincing_trend_porcentage: 0,
+      isFirst: false,
+    },
     month_invoicing: 0,
     average_ticket: 0,
   })
@@ -167,15 +173,52 @@ export default function AdminDashboard() {
     },
   ]
 
+  /**
+   * Retorna dados formatados de acordo com a trend de faturamento de hoje
+   */
+  const getInvoicingTrendData = () => {
+    const trend = financialSummary.today_invoicing.invoincing_trend_porcentage
+    const defaultLabel = `${financialSummary.today_invoicing.invoincing_trend_porcentage}% vs. ontem`
+    const firstData = financialSummary.today_invoicing.isFirst
+
+    if (firstData) {
+      return {
+        label: 'Sem dados anteriores',
+        icon: null,
+        color: 'text-muted-foreground',
+      }
+    } else {
+      if (trend > 0) {
+        return {
+          label: defaultLabel,
+          color: 'text-emerald-500',
+          icon: <TrendingUpIcon className='h-4 w-4' />,
+        }
+      } else if (trend === 0) {
+        return {
+          label: defaultLabel,
+          color: 'text-muted-foreground',
+          icon: <TrendingUpDownIcon className='h-4 w-4' />,
+        }
+      } else {
+        return {
+          label: defaultLabel,
+          color: 'text-red-500',
+          icon: <TrendingDownIcon className='h-4 w-4' />,
+        }
+      }
+    }
+  }
+
   const invoicingCards = [
     {
       title: 'Faturamento Hoje',
-      ammount: formatCurrency(financialSummary.today_invoicing),
+      ammount: formatCurrency(financialSummary.today_invoicing.total),
       icon: <DollarSignIcon className='h-5 w-5 text-emerald-600' />,
       description: (
-        <div className='flex gap-1 items-center text-emerald-500'>
-          <TrendingUpIcon className='h-4 w-4' />
-          +12% vs. ontem
+        <div className={cn('flex gap-1 items-center', getInvoicingTrendData().color)}>
+          {getInvoicingTrendData().icon}
+          {getInvoicingTrendData().label}
         </div>
       ),
       className: 'bg-emerald-200 dark:bg-emerald-600/20',

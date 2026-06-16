@@ -81,7 +81,11 @@ export interface DashboardStats {
 }
 
 export interface FinancialSummary {
-  today_invoicing: number
+  today_invoicing: {
+    total: number
+    invoincing_trend_porcentage: number
+    isFirst: boolean
+  }
   month_invoicing: number
   average_ticket: number
 }
