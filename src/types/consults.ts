@@ -90,6 +90,11 @@ export interface FinancialSummary {
   average_ticket: number
 }
 
+export interface InvoicingByYear {
+  month: string
+  total: number
+}
+
 export interface BusinessHour {
   id: string
   barbershop_id: string

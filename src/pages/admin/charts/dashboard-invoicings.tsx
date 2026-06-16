@@ -16,12 +16,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import type { InvoicingByYear } from '@/types/consults'
 import { formatCurrency } from '@/utils/formatters'
 import { getYearList } from '@/utils/list'
 
 interface InvoicingChartProps {
   config: ChartConfig
-  data: { [key: string]: string | number }[]
+  data: InvoicingByYear[]
+  year: number
+  onYearChange: (year: number) => void
 }
 
 export default function InvoicingChart(props: InvoicingChartProps) {
@@ -32,7 +35,10 @@ export default function InvoicingChart(props: InvoicingChartProps) {
           <CardTitle>Faturamento Anual</CardTitle>
           <CardDescription>Comparativo mês a mês</CardDescription>
         </div>
-        <Select>
+        <Select
+          value={props.year.toString()}
+          onValueChange={(val) => props.onYearChange(Number(val))}
+        >
           <SelectTrigger className='w-full max-w-48'>
             <SelectValue placeholder='Selecione o ano' />
           </SelectTrigger>
@@ -67,11 +73,12 @@ export default function InvoicingChart(props: InvoicingChartProps) {
               }
             />
             <Line
-              dataKey='value'
+              dataKey='total'
               type='linear'
               stroke='var(--color-blue-500)'
               strokeWidth={2}
               dot={false}
+              animationDuration={500}
             />
           </LineChart>
         </ChartContainer>

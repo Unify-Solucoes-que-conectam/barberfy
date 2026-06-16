@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import {
   AlertCircleIcon,
@@ -35,17 +35,27 @@ import axios from '@/lib/axios'
 import dayjs from '@/lib/dayjs'
 import { cn } from '@/lib/utils'
 import type { ApiResponse } from '@/types/api-response'
-import type { Appointment, DashboardStats, FinancialSummary } from '@/types/consults'
+import type {
+  Appointment,
+  DashboardStats,
+  FinancialSummary,
+  InvoicingByYear,
+} from '@/types/consults'
 import { formatCurrency, nameFormatter } from '@/utils/formatters'
-import { getMonthList } from '@/utils/list'
 
 import InvoicingChart from './charts/dashboard-invoicings'
 
 type StatusFilter = 'all' | '0' | '1' | '2'
 
 export default function AdminDashboard() {
+  // ==================== REF's ====================
+  const mounted = useRef(false)
+
+  // ==================== HOOK's ====================
   const { user } = useAuth()
   const { setPageTitle } = useHeader()
+
+  // ==================== STATE's ====================
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all')
   const [spinners, setSpinners] = useState({
     general: false,
@@ -60,12 +70,18 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     setPageTitle('Dashboard')
+    if (!mounted.current) {
+      mounted.current = true
+      fetchAll() // carrega todos os dados da dashboard
+    }
   }, [])
 
   /**
    * consultar dados quando receber notificação
    */
   useEffect(() => {
+    if (!mounted.current) return
+
     // consultar dados
     fetchStats()
   }, [messages])
@@ -74,8 +90,18 @@ export default function AdminDashboard() {
    * refetch quando o filtro mudar
    */
   useEffect(() => {
+    if (!mounted.current) return
+
     fetchStats()
   }, [statusFilter])
+
+  const [invoicingYear, setInvoicingYear] = useState<number>(dayjs().year())
+
+  useEffect(() => {
+    if (!mounted.current) return
+
+    fetchInvoicingByYear(invoicingYear)
+  }, [invoicingYear])
 
   const [appointments, setAppointments] = useState<Appointment[]>([])
   const [stats, setStats] = useState<DashboardStats>({
@@ -93,6 +119,7 @@ export default function AdminDashboard() {
     month_invoicing: 0,
     average_ticket: 0,
   })
+  const [invoicingByYear, setInvoicingByYear] = useState<InvoicingByYear[]>([])
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null)
 
   const fetchStats = async (isRefresh = false) => {
@@ -121,6 +148,38 @@ export default function AdminDashboard() {
       setSpinners((prev) => ({ ...prev, general: false, refresh: false }))
       setLastUpdate(new Date())
     }
+  }
+
+  const fetchInvoicingByYear = async (year: number, isRefresh = false) => {
+    setSpinners((prev) => ({ ...prev, general: true, refresh: isRefresh }))
+
+    try {
+      const response = await axios.get<ApiResponse<InvoicingByYear[]>>(
+        '/dashboard/invoicingByYear',
+        {
+          params: { year },
+        }
+      )
+
+      if (response.data.success) {
+        setInvoicingByYear(response.data.data)
+      } else {
+        toast.error(response.data.message || 'Erro ao consutar faturamento por ano.')
+      }
+    } catch (error: any) {
+      toast.error('Erro ao buscar estatísticas.', error)
+    } finally {
+      setSpinners((prev) => ({ ...prev, general: false, refresh: false }))
+      setLastUpdate(new Date())
+    }
+  }
+
+  /**
+   * Consulta todos os dados do dashboard
+   */
+  const fetchAll = (isRefresh = false) => {
+    fetchStats(isRefresh)
+    fetchInvoicingByYear(invoicingYear, isRefresh)
   }
 
   const getStatusData = (status: string): { label: string; color: string } => {
@@ -266,7 +325,7 @@ export default function AdminDashboard() {
             <span className='text-sm text-muted-foreground'>
               Última atualização realizada às {dayjs(lastUpdate).format('HH:mm:ss')}
             </span>
-            <Button size='icon' variant='outline' onClick={() => fetchStats(true)}>
+            <Button size='icon' variant='outline' onClick={() => fetchAll(true)}>
               <RefreshCwIcon
                 className={cn({
                   'animate-spin': spinners.refresh,
@@ -381,10 +440,9 @@ export default function AdminDashboard() {
                 color: 'var(--primary)',
               },
             }}
-            data={getMonthList('pt-BR', 'short').map((month) => ({
-              month: month.charAt(0).toUpperCase() + month.slice(1, 3),
-              value: Math.floor(Math.random() * 10000),
-            }))}
+            data={invoicingByYear}
+            year={invoicingYear}
+            onYearChange={setInvoicingYear}
           />
         </div>
       </div>
