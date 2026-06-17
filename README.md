@@ -39,10 +39,6 @@ Abra o arquivo `.env` recém-criado e configure as variáveis de ambiente necess
 ```env
 # URL da API do backend
 VITE_API_URL='http://localhost:8000/api'
-# Modo do aplicativo (ex: client, admin, etc)
-VITE_APP_MODE='client'
-# ID da barbearia (UUID) cadastrada no backend
-VITE_BARBERSHOP_ID='uuid-da-barbearia'
 
 # Configurações do Reverb (Websockets/Real-time)
 VITE_REVERB_APP_KEY="sua_chave_reverb"
