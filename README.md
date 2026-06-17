@@ -1,73 +1,106 @@
-# Welcome to your Lovable project
+# Barberfy 💈
 
-## Project info
+Barberfy é uma aplicação web modernizada e responsiva para gestão e agendamento de barbearias (Whitelabel). Desenvolvido com tecnologias modernas e focado em alta performance e excelente experiência do usuário.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+---
 
-## How can I edit this code?
+## 🚀 Como Iniciar o Projeto
 
-There are several ways of editing your application.
+Siga os passos abaixo para configurar e rodar o projeto localmente em sua máquina.
 
-**Use Lovable**
+### 📋 Pré-requisitos
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+Para rodar este projeto, você precisará ter o **[Bun](https://bun.sh/)** instalado em sua máquina. O Bun é um toolkit Javascript rápido e completo (gerenciador de pacotes, executor de tarefas e muito mais).
 
-Changes made via Lovable will be committed automatically to this repo.
+Caso ainda não tenha o Bun instalado:
+- **Windows (PowerShell):**
+  ```powershell
+  powershell -c "irm bun.sh/install.ps1 | iex"
+  ```
+- **macOS & Linux:**
+  ```bash
+  curl -fsSL https://bun.sh/install | bash
+  ```
 
-**Use your preferred IDE**
+---
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### 🛠️ Passo a Passo para Execução
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+#### 1. Configurar as Variáveis de Ambiente
 
-Follow these steps:
+Crie um arquivo `.env` na raiz do diretório `barberfy` com base no arquivo de exemplo `.env.example`:
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+```bash
+cp .env.example .env
 ```
 
-**Edit a file directly in GitHub**
+Abra o arquivo `.env` recém-criado e configure as variáveis de ambiente necessárias:
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+```env
+# URL da API do backend
+VITE_API_URL='http://localhost:8000/api'
+# Modo do aplicativo (ex: client, admin, etc)
+VITE_APP_MODE='client'
+# ID da barbearia (UUID) cadastrada no backend
+VITE_BARBERSHOP_ID='uuid-da-barbearia'
 
-**Use GitHub Codespaces**
+# Configurações do Reverb (Websockets/Real-time)
+VITE_REVERB_APP_KEY="sua_chave_reverb"
+VITE_REVERB_HOST="localhost"
+VITE_REVERB_PORT="8080"
+VITE_REVERB_SCHEME="http"
+```
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+#### 2. Instalar as Dependências
 
-## What technologies are used for this project?
+Com o Bun instalado, execute o comando abaixo para baixar todas as dependências necessárias do projeto:
 
-This project is built with:
+```bash
+bun install
+```
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+#### 3. Rodar o Servidor de Desenvolvimento
 
-## How can I deploy this project?
+Para iniciar o servidor local com hot reload, execute:
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+```bash
+bun run dev
+```
 
-## Can I connect a custom domain to my Lovable project?
+Após rodar o comando, o terminal exibirá a URL local (`http://localhost:3000`) para acessar o aplicativo no navegador.
 
-Yes, you can!
+---
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## 🛠️ Outros Scripts Disponíveis
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+No arquivo `package.json`, você também encontrará outros comandos úteis:
+
+*   **Construir para produção:**
+    ```bash
+    bun run build
+    ```
+*   **Análise estática de código (Lint):**
+    ```bash
+    bun run lint
+    ```
+*   **Formatação automática do código:**
+    ```bash
+    bun run format
+    ```
+*   **Visualizar a build de produção localmente:**
+    ```bash
+    bun run preview
+    ```
+
+---
+
+## 🧰 Tecnologias Utilizadas
+
+- **React 19**
+- **Vite** (Build tool rápida)
+- **Tailwind CSS v4** (Estilização moderna)
+- **Framer Motion** (Animações fluidas)
+- **TypeScript** (Tipagem estática)
+- **Radix UI** (Componentes acessíveis e sem estilo)
+- **React Router 7** (Roteamento de páginas)
+- **Zod & React Hook Form** (Validação e manipulação de formulários de forma robusta)
