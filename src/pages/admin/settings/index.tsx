@@ -191,7 +191,7 @@ export default function AdminSettings() {
 
     try {
       const appLink = barbershop?.id
-        ? `${window.location.origin}/agendafy/auth/login?barbershop_id=${barbershop.id}`
+        ? `${window.location.origin}/barberfy/auth/login?barbershop_id=${barbershop.id}`
         : values.app_link
 
       const response = await axios.put<ApiResponse>(`/barber-shops/${barbershop?.id}`, {
