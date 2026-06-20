@@ -125,5 +125,4 @@ export default defineConfig({
   preview: {
     allowedHosts: ['barberfy.unifysolucoes.com.br'],
   },
-  base: '/barberfy/',
 })
