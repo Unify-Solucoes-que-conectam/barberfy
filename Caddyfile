@@ -1,0 +1,23 @@
+:{$PORT:3000} {
+    log {
+        format json
+    }
+
+    # Define a pasta de build do Vite
+    root * ./dist
+
+    # Ativa compressão
+    encode gzip
+
+    # Se o caminho for /barberfy/ algo, tenta o arquivo. Se não achar, joga pro index.html
+    handle /barberfy* {
+        try_files {path} /index.html
+        file_server
+    }
+
+    # Fallback para a raiz se necessário
+    handle {
+        try_files {path} /index.html
+        file_server
+    }
+}
