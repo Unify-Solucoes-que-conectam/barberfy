@@ -75,6 +75,24 @@ export default defineConfig({
         ],
       },
     }),
+    {
+      name: 'redirect-to-base',
+      configureServer(server) {
+        server.middlewares.use((req, res, next) => {
+          // Se o usuário acessar a raiz ou esquecer a barra final em /barberfy
+          if (req.url === '/' || req.url === '/barberfy') {
+            res.writeHead(301, { Location: '/barberfy/' })
+            res.end()
+          } else if (req.url && !req.url.startsWith('/barberfy/')) {
+            // Se ele digitar algo como /b, manda para /barberfy/b ou direto para a base
+            res.writeHead(301, { Location: '/barberfy/' })
+            res.end()
+          } else {
+            next()
+          }
+        })
+      },
+    },
   ],
   define: {
     'process.env.VITE_APP_VERSION': JSON.stringify(packageJson.version),
