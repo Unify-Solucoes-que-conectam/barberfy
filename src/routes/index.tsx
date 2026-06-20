@@ -50,7 +50,7 @@ const router = createBrowserRouter(
     },
   ],
   {
-    basename: '/agendafy',
+    basename: '/barberfy',
   }
 )
 

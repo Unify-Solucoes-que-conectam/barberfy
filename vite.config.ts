@@ -18,8 +18,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['robots.txt'],
       manifest: {
-        name: 'BarberApp',
-        short_name: 'BarberApp',
+        name: 'BarberFy',
+        short_name: 'BarberFy',
         description: 'Agende seu horário na barbearia',
         start_url: '/client/home',
         display: 'standalone',
@@ -90,7 +90,8 @@ export default defineConfig({
       usePolling: true,
     },
     host: true,
-    strictPort: false, // Permite mudar de porta se 3000 estiver em uso
+    strictPort: false, // Permite mudar de porta se 3000 estiver em uso,
+    allowedHosts: ['apps.unifysolucoes.com.br'],
   },
   build: {
     chunkSizeWarningLimit: 10000,
@@ -101,6 +102,10 @@ export default defineConfig({
         drop_console: true,
       },
     },
+  },
+  // Configuração para o modo de Preview/Produção
+  preview: {
+    allowedHosts: ['apps.unifysolucoes.com.br'],
   },
   base: '/barberfy/',
 })
