@@ -11,7 +11,9 @@ import { AdminGuard } from './guards'
 
 function RootRedirect() {
   const role = localStorage.getItem('user_role')
-  return <Navigate to={getRedirectPathByRole(role)} replace />
+  const targetPath = getRedirectPathByRole(role) || '/auth/login'
+
+  return <Navigate to={getRedirectPathByRole(targetPath)} replace />
 }
 
 const router = createBrowserRouter(
