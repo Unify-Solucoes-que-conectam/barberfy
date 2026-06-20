@@ -109,7 +109,7 @@ export default defineConfig({
     },
     host: true,
     strictPort: false, // Permite mudar de porta se 3000 estiver em uso,
-    allowedHosts: ['apps.unifysolucoes.com.br'],
+    allowedHosts: ['barberfy.unifysolucoes.com.br'],
   },
   build: {
     chunkSizeWarningLimit: 10000,
@@ -123,7 +123,7 @@ export default defineConfig({
   },
   // Configuração para o modo de Preview/Produção
   preview: {
-    allowedHosts: ['apps.unifysolucoes.com.br'],
+    allowedHosts: ['barberfy.unifysolucoes.com.br'],
   },
   base: '/barberfy/',
 })
