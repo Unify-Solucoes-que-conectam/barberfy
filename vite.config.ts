@@ -102,5 +102,5 @@ export default defineConfig({
       },
     },
   },
-  base: '/agendafy/',
+  base: '/barberfy/',
 })
